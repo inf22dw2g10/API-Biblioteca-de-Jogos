@@ -1,0 +1,19 @@
+openapi: 3.0.0
+info:
+  title: Games API
+  version: 1.0.0
+  description: Games API
+paths:
+  /games/:
+    get:
+      tags: [ Games ]
+      summary: Get all games
+      description: |
+        Get all games
+      responses:
+        '200':
+          description: Get all games
+        '404':
+          description: No games Found
+        '500':
+          description: Error

@@ -1,0 +1,107 @@
+openapi: 3.0.0
+info:
+  title: Users API
+  version: 1.0.0
+  description: Users API
+paths:
+  /users/auth/github:
+    get:
+      tags: [ Users ]
+      summary: Authenticate with GitHub
+      description: |
+        Redirect to to GitHub
+      responses:
+        '200':
+          description: Reached destination
+  /users/auth/github/callback:
+    get:
+      tags: [ Users ]
+      summary: Callback URL for GitHub authentication
+      description: |
+        The callback URL for GitHub authentication.
+      responses:
+        '200':
+          description: Login successfull
+        '201':
+          description: Register successfull
+        '500':
+          description: Unauthorized
+  /users/register:
+    post:
+      tags: [ Users ]
+      summary: Register a new user
+      description: |
+        Register a new user account with the API.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: User Created
+        '400':
+          description: Invalid request
+        '409':
+          description: Conflict, user already exists
+  /users/login:
+    post:
+      tags: [ Users ]
+      summary: Log in to the API
+      description: |
+        Log in to the API with an existing user account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Successful login
+        '401':
+          description: Invalid email or password.
+        '403':
+          description: User not found
+        '500':
+          description: Erro
+  /users/logout:
+    get:
+      tags: [ Users ]
+      summary: Log out of the API
+      description: |
+        Log out of the API and invalidate the session token.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successful logout
+  /users/mydata:
+    get:
+      tags: [ Users ]
+      summary: Show logged user data
+      description: |
+        Show logged user data.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Gets user data
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
