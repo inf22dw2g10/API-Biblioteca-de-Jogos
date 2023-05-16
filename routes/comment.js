@@ -12,4 +12,3 @@ router.delete('/:commentId', checkAuth, CommentController.deleteComment);
 
 
 module.exports = router;
-
