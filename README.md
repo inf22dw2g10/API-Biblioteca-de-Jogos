@@ -40,3 +40,9 @@ In this project we intend to create a library for games. Something similar to th
 * Dinis Vaz Pedro Ximenes [@DinisXimenes](https://github.com/xmenzzz)
 * Pedro Alexandre Gonçalves Ramos [@PedroRamos](https://github.com/senou6)
 * Tiago Praça Pereira [@TiagoPereira](https://github.com/tiagopraca)
+
+## Links
+
+[Postman](https://www.postman.com/senou6/workspace/api-jogos/request/12813093-83af729d-fbb4-4a36-bbb5-6aa0cc618f82)
+[API](https://hub.docker.com/r/inf22dw2g10/api_jogos)
+[DATABASE](/)
