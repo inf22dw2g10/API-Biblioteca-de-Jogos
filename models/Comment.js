@@ -13,7 +13,7 @@ Comment.init(
     rating:{
       type: DataTypes.SMALLINT,
       allowNull:false,
-    }
+    },
   },
   {
     sequelize,

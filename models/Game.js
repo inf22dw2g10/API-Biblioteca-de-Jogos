@@ -12,12 +12,19 @@ Game.init(
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    cover: {
+      type: DataTypes.TEXT,
+    },
+    price: {
+      type: DataTypes.FLOAT,
+    },
     year: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
   },
   {
+    timestamps: false,
     sequelize,
     modelName: 'Game',
   }

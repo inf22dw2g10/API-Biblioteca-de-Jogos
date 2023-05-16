@@ -1,0 +1,19 @@
+openapi: 3.0.0
+info:
+  title: Comments API
+  version: 1.0.0
+  description: Comments API
+paths:
+    /:commentId:
+    get:
+      tags: [ Comments ]
+      summary: Get a comment
+      description: |
+         Get a comment
+      responses:
+        '200':
+          description: Got comment
+        '404':
+          description: Erro
+        '500':
+          description: Error

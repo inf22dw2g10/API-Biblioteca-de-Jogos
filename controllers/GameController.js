@@ -11,7 +11,6 @@ exports.getAllGames = async (req, res) => {
       res.status(404).json({message:'No games found'})
     }
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -28,20 +27,18 @@ exports.getGameById = async (req, res) => {
 
     res.status(200).json(game);
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
 
 exports.createGame = async (req, res) => {
   try {
-    const { title, description, genre, rating, price, images, videos } = req.body;
+    const { title, description, year, price, cover  } = req.body;
 
-    await Game.create({ title, description, genre, rating, price, images, videos });
+    await Game.create({ title, description, year, price, cover });
 
     res.status(201).json({ message: 'Game created successfully' });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -49,7 +46,7 @@ exports.createGame = async (req, res) => {
 exports.updateGame = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, genre, rating, price, images, videos } = req.body;
+    const { title, description, year, price, cover } = req.body;
 
     const game = await Game.findOne({ where: { id } });
 
@@ -57,15 +54,32 @@ exports.updateGame = async (req, res) => {
       return res.status(404).json({ message: 'Game not found' });
     }
 
-    await game.update({ title, description, genre, rating, price, images, videos });
+    await game.update({ title, description, year, price, cover });
 
     res.status(200).json({ message: 'Game updated successfully' });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+exports.changePrice = async (req,res) => {
+  try {
+    const { id } = req.params
+    const { newPrice } = req.body
 
+    const game = await Game.findByPk(id)
+
+    if(!game){
+      return res.status(404).json({ message: 'Game not found' });
+    }else{
+      await Game.update({price: newPrice},{where:{ id : id}})
+      res.status(201).json({ message: 'Price updated successfully' });
+    }
+
+
+  }catch(err){
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
 exports.deleteGame = async (req, res) => {
   try {
     const { id } = req.params;
@@ -77,10 +91,9 @@ exports.deleteGame = async (req, res) => {
     }
 
     await game.destroy();
-
     res.status(200).json({ message: 'Game deleted successfully' });
+
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: 'Internal server error' });
   }
 };

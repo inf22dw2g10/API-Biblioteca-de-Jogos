@@ -9,16 +9,20 @@ const axios = require('axios');
 
 
 exports.userData = async (req,res) =>{
-  const user = req.user
+  try{
+    const user = req.user
 
-  const userData = await User.findByPk(req.user.id)
-  const userComments= await Comment.findAll({
-    where:{
-      UserId:req.user.id
-    }
-  })
+    const userData = await User.findByPk(req.user.id)
+    const userComments= await Comment.findAll({
+      where:{
+        UserId:req.user.id
+      }
+    })
 
-  res.status(200).json({userData, userComments})
+    res.status(200).json({userData, userComments})
+  }catch(err){
+    res.status(500).json({ message: 'An error occurred while logging in.' });
+  }
     
 }
 exports.register= async (req, res) =>{
@@ -36,15 +40,18 @@ exports.register= async (req, res) =>{
       res.status(409).json({ username: 'Email already registered' });
     }
   } catch (error) {
-    console.log(error);
     res.status(400).json({ message: 'An error occurred while registering the user.' });
   }
 }
 exports.logout= async(req,res) =>{
-  const UserId = jwt.decode(req.cookies.token).id
-  const deleteSession = await Session.destroy({where: { accessToken: req.cookies.token, UserId: UserId }})
-  res.clearCookie("token")
-  res.redirect('/');
+  try{
+    const UserId = jwt.decode(req.cookies.token).id
+    const deleteSession = await Session.destroy({where: { accessToken: req.cookies.token, UserId: UserId }})
+    res.clearCookie("token")
+    res.status(200).json({message: "Logged out"});
+  }catch(err){
+    res.status(500).json({ message: 'An error occurred while retrieving the user.' });
+  }
 },
 exports.login= async (req, res) => {
   try {
@@ -81,13 +88,16 @@ exports.login= async (req, res) => {
       res.status(401).json({ message: 'Utilizador está registado com outro metodo' });
     }
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: 'An error occurred while logging in.' });
   }
 }
 exports.authGithub = (req,res) =>{
-  const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&scope=user:email`;
-  res.redirect(githubAuthUrl);
+  try{
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&scope=user:email`;
+    res.redirect(githubAuthUrl);
+  }catch(err){
+    res.status(500).json({ message: 'An error occurred while retrieving the user.' });
+  }
 }
 exports.authGithubCallback = async (req,res) => {
   try {
@@ -174,7 +184,6 @@ exports.authGithubCallback = async (req,res) => {
     });
     
   } catch (err) {
-    console.error(err);
     res.status(500).json({
       error: 'Internal server error'
     });
@@ -184,9 +193,12 @@ exports.changePW= async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
     const user = req.user
-    // Verifica se a senha antiga corresponde
-    const isMatch = await bcrypt.compare(oldPassword, user.password);
 
+    const dbUser = await User.findByPk(req.user.id)
+
+    // Verifica se a senha antiga corresponde
+    const isMatch = await bcrypt.compare(oldPassword, dbUser.dataValues.password);
+    
     // Se não corresponder, retorna uma resposta de erro
     if (!isMatch) {
       return res.status(400).json({ message: 'Senha antiga inválida' });
@@ -204,15 +216,15 @@ exports.changePW= async (req, res) => {
     // Retorna uma resposta de sucesso
     return res.status(200).json({ message: 'Senha atualizada com sucesso' });
   }catch(error){
-    console.log(error);
     res.status(500).json({ message: 'An error occurred while retrieving the user.' });
   }
 }
 exports.createPW= async (req, res)=> {
     try {
       const user = req.user  
+      const { newPassword } = req.body;
 
-      const hashedPassword = await bcrypt.hash(createPassword, 10);
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
 
       await User.update(
         { password: hashedPassword },
@@ -221,25 +233,27 @@ exports.createPW= async (req, res)=> {
   
       // Retorna uma resposta de sucesso
       return res.status(200).json({ message: 'Registado com sucesso' });
+      
     }catch(error){
-      console.log(error);
       res.status(500).json({ message: 'An error occurred while retrieving the user.' });
     }
-  },
+}
 exports.changeName= async (req, res) => {
   try {
 
     const user = req.user;
     const newName = req.body.newName;
 
-    await User.update(
-      { username: newName },
-      { where: { id: user.id } }
-    );
-
-    return res.status(200).json({ message: 'Nome atualizado com sucesso' });
+    if(newName){
+      await User.update(
+        { username: newName },
+        { where: { id: user.id } }
+      );
+      res.status(200).json({ message: 'Nome atualizado com sucesso' });
+    }else{
+      res.status(400).json({ message: 'Error updating name' });
+    }
   }catch(error){
-    console.log(error);
     res.status(500).json({ message: 'An error occurred while retrieving the user.' });
   }
 }
@@ -250,7 +264,6 @@ exports.deleteMyAccount= async (req,res) =>{
     res.clearCookie("token")
     res.status(200).json({deletedUser})
   }catch(error){
-    console.log(error);
     res.status(500).json({ message: 'An error occurred while retrieving the user.' });
   }
 
