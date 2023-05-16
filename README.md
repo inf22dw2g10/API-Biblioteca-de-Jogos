@@ -34,8 +34,6 @@ In this project we intend to create a library for games. Something similar to th
 * Chapter 1: [Project presentation](doc/c1.md)
 ### Resources
 * Chapter 2: [Resources](doc/c2.md)
-### Product
-* Chapter 3: [Product](doc/c3.md)
 
 
 ## Team
