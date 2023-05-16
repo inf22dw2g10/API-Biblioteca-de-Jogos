@@ -9,7 +9,8 @@ In this project we intend to create a library for games. Something similar to th
 ## Repository organization
 
 
-* **Source code** is in the [this folder](/).
+* **Source code** is in the [this folder](/)
+* Report chapters are in [doc folder](doc/)
 * Initial [OpenApi documents](/docs)
 * / [Public](/public)
 * [Models](/models)
@@ -26,6 +27,16 @@ In this project we intend to create a library for games. Something similar to th
 
 * Docker
 * Express
+
+## Report
+
+### Project presentation
+* Chapter 1: [Project presentation](doc/c1.md)
+### Resources
+* Chapter 2: [Resources](doc/c2.md)
+### Product
+* Chapter 3: [Product](doc/c3.md)
+
 
 ## Team
 * Dinis Vaz Pedro Ximenes [@DinisXimenes](https://github.com/xmenzzz)
