@@ -9,11 +9,11 @@ Game.init(
       allowNull: false,
     },
     description: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     cover: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
     },
     price: {
       type: DataTypes.FLOAT,

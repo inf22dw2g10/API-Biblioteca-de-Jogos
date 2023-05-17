@@ -7,11 +7,11 @@ class Comment extends Model {}
 Comment.init(
   {
     text: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     rating:{
-      type: DataTypes.SMALLINT,
+      type: DataTypes.INTEGER,
       allowNull:false,
     },
   },

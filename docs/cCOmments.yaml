@@ -4,16 +4,143 @@ info:
   version: 1.0.0
   description: Comments API
 paths:
-    /:commentId:
+  /comments/{commentId}:
     get:
       tags: [ Comments ]
       summary: Get a comment
       description: |
          Get a comment
+      parameters:
+        - in: path
+          name: id
+          description: ID of the comment to retrieve
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: Got comment
         '404':
-          description: Erro
+          description: Internal server error
         '500':
-          description: Error
+          description: Internal server error
+    put:
+      tags:  [ Comments ]
+      summary: Update comment by ID
+      description: Update a comment by its ID
+      parameters:
+        - in: path
+          name: id
+          description: ID of the comment to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                rating:
+                  type: integer
+      responses:
+        '200':
+          description: Comment updated successfully
+        '404':
+          description: Comment not found
+        '500':
+          description: Internal server error
+    delete:
+      tags:  [ Comments ]
+      summary: Delete comment by ID
+      description: Delete a comment by its ID
+      parameters:
+        - in: path
+          name: id
+          description: ID of the comment to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Comment deleted successfully
+        '404':
+          description: Comment not found
+        '500':
+          description: Internal server error
+  /comments/game/{gameId}:
+    get:
+      tags:  [ Comments ]
+      summary: Get comment by ID
+      description: Retrieve a comment by its Game's ID
+      parameters:
+        - in: path
+          name: gameId
+          description: ID of the game to retrieve
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Comment retrieved successfully
+        '404':
+          description: Comment not found
+        '500':
+          description: Internal server error
+    post:
+      tags: [ Comments ]
+      summary: Create comment
+      description: |
+        Create comment
+      parameters:
+        - in: path
+          name: gameId
+          description: ID of the game to retrieve
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                rating:
+                  type: integer
+      responses:
+        '201':
+          description: Comment created
+        '400':
+          description: Internal server error
+        '500':
+          description: Internal server error
+  /comments/user/{userId}:
+    get:
+      tags:  [ Comments ]
+      summary: Get comments by ID
+      description: Retrieve a comments by its User's ID
+      parameters:
+        - in: path
+          name: userId
+          description: ID of the User to retrieve
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Comment retrieved successfully
+        '404':
+          description: Comment not found
+        '500':
+          description: Internal server error
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer

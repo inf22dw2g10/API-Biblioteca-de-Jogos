@@ -12,8 +12,134 @@ paths:
         Get all games
       responses:
         '200':
-          description: Get all games
+          description: Got all games
         '404':
           description: No games Found
         '500':
-          description: Error
+          description: Internal server error
+    post:
+      tags: [ Games ]
+      summary: Create game
+      description: |
+        Create game
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                year:
+                  type: integer
+                price:
+                  type: number
+                cover:
+                  type: string
+      responses:
+        '201':
+          description: Game created
+        '500':
+          description: Internal server error
+  /games/{id}:
+    get:
+      tags: [ Games ]
+      summary: Get game by ID
+      description: Retrieve a game by its ID
+      parameters:
+        - in: path
+          name: id
+          description: ID of the game to retrieve
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Game retrieved successfully
+        '404':
+          description: Game not found
+        '500':
+          description: Internal server error
+    put:
+      tags: [ Games ]
+      summary: Update game by ID
+      description: Update a game by its ID
+      parameters:
+        - in: path
+          name: id
+          description: ID of the game to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                year:
+                  type: integer
+                price:
+                  type: number
+                cover:
+                  type: string
+      responses:
+        '200':
+          description: Game updated successfully
+        '404':
+          description: Game not found
+        '500':
+          description: Internal server error
+    patch:
+      tags: [ Games ]
+      summary: Partially update a game's info by ID
+      description: Partially update a game's info by its ID
+      parameters:
+        - in: path
+          name: id
+          description: ID of the game to update partially
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newPrice:
+                  type: number
+      responses:
+        '200':
+          description: Game patched successfully
+        '404':
+          description: Game not found
+        '500':
+          description: Internal server error
+    delete:
+      tags: [ Games ]
+      summary: Delete game by ID
+      description: Delete a game by its ID
+      parameters:
+        - in: path
+          name: id
+          description: ID of the game to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Game deleted successfully
+        '404':
+          description: Game not found
+        '500':
+          description: Internal server error

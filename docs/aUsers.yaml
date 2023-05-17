@@ -6,32 +6,29 @@ info:
 paths:
   /users/auth/github:
     get:
-      tags: [ Users ]
+      tags: [Users]
       summary: Authenticate with GitHub
-      description: |
-        Redirect to to GitHub
+      description: Redirect to GitHub for authentication
       responses:
         '200':
           description: Reached destination
   /users/auth/github/callback:
     get:
-      tags: [ Users ]
+      tags: [Users]
       summary: Callback URL for GitHub authentication
-      description: |
-        The callback URL for GitHub authentication.
+      description: The callback URL for GitHub authentication.
       responses:
         '200':
-          description: Login successfull
+          description: Authentication successful. User logged in
         '201':
-          description: Register successfull
+          description: Authentication successful. User registered and logged in
         '500':
           description: Unauthorized
   /users/register:
     post:
-      tags: [ Users ]
+      tags: [Users]
       summary: Register a new user
-      description: |
-        Register a new user account with the API.
+      description: Register a new user account with the API.
       requestBody:
         required: true
         content:
@@ -54,10 +51,9 @@ paths:
           description: Conflict, user already exists
   /users/login:
     post:
-      tags: [ Users ]
+      tags: [Users]
       summary: Log in to the API
-      description: |
-        Log in to the API with an existing user account.
+      description: Log in to the API with an existing user account.
       requestBody:
         required: true
         content:
@@ -65,7 +61,7 @@ paths:
             schema:
               type: object
               properties:
-                username:
+                email:
                   type: string
                 password:
                   type: string
@@ -73,17 +69,16 @@ paths:
         '200':
           description: Successful login
         '401':
-          description: Invalid email or password.
-        '403':
+          description: Invalid email or password
+        '404':
           description: User not found
         '500':
-          description: Erro
+          description: Internal server error
   /users/logout:
     get:
-      tags: [ Users ]
+      tags: [Users]
       summary: Log out of the API
-      description: |
-        Log out of the API and invalidate the session token.
+      description: Log out of the API and invalidate the session token.
       security:
         - BearerAuth: []
       responses:
@@ -91,15 +86,89 @@ paths:
           description: Successful logout
   /users/mydata:
     get:
-      tags: [ Users ]
+      tags: [Users]
       summary: Show logged user data
-      description: |
-        Show logged user data.
+      description: Show logged user data.
       security:
         - BearerAuth: []
       responses:
         '200':
-          description: Gets user data
+          description: Retrieves user data
+  /users/changePassword:
+    patch:
+      tags: [Users]
+      summary: Partially update a user's info
+      description: Partially update a user's password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                oldPassword:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        '200':
+          description: Password updated successfully
+        '404':
+          description: Incorrect old password
+        '500':
+          description: Internal server error
+  /users/changeName:
+    patch:
+      tags: [Users]
+      summary: Partially update a user's info
+      description: Partially update a user's username.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newName:
+                  type: string
+      responses:
+        '200':
+          description: Username updated successfully
+        '400':
+          description: Invalid request
+        '500':
+          description: Internal server error
+  /users/createPW:
+    patch:
+      tags: [Users]
+      summary: Partially update a user's info
+      description: Partially update a user's password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newPassword:
+                  type: string
+      responses:
+        '200':
+          description: Password created successfully
+        '500':
+          description: Internal server error
+  /users/deleteMyAccount:
+    delete:
+      tags: [Users]
+      summary: Delete account
+      description: Delete an account.
+      responses:
+        '200':
+          description: Account deleted successfully
+        '404':
+          description: Account not found
+        '500':
+          description: Internal server error
 components:
   securitySchemes:
     BearerAuth:
