@@ -19,6 +19,14 @@ User.init(
     gitHubToken:{
       type: DataTypes.STRING,
       unique:true
+    },
+    games:{
+      type:DataTypes.JSON,
+      defaultValue: {"games": []}
+    },
+    admin:{
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
   },
   {
@@ -26,5 +34,6 @@ User.init(
     modelName: 'User',
   }
 );
+
 
 module.exports = User;
