@@ -8,7 +8,6 @@ checkPerm = async (req,res,next)=>{
 
         checkUser.dataValues.admin
     if(checkUser.dataValues.admin){
-
         req.user = req.user
         next()
     }else{
