@@ -1,6 +1,6 @@
 const User = require('../models/User');
 
-checkPerm = async (req,res,next)=>{
+const checkPerm = async (req,res,next)=>{
     
     try{
 
