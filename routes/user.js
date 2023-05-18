@@ -10,8 +10,9 @@ router.post('/login', UserController.login);
 router.get('/logout', checkAuth, UserController.logout);
 
 router.get('/mydata',checkAuth, UserController.userData);
+router.get('/profile/:userId', UserController.userProfile);
 
-router.get('/games/:userId', UserController.myGames); // New
+router.get('/games/:userId', UserController.userGames); // New
 router.patch('/addGame/:gameId', checkAuth, UserController.addGame) // New
 
 router.patch('/changePassword', checkAuth, UserController.changePW)

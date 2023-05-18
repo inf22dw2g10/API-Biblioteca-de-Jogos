@@ -1,11 +1,9 @@
 const Comment = require('../models/Comment');
 
-
 exports.getComment = async (req, res) => {
   try {
     const { commentId } = req.params;
-
-    const comment = await Comment.findByPk(commentId)
+    const comment = await Comment.findByPk(commentId);
 
     res.status(200).json(comment);
   } catch (err) {
@@ -13,11 +11,9 @@ exports.getComment = async (req, res) => {
   }
 };
 
-
 exports.getCommentsByGameId = async (req, res) => {
   try {
     const { gameId } = req.params;
-
     const comments = await Comment.findAll({ where: { GameId: gameId } });
 
     res.status(200).json(comments);
@@ -26,11 +22,9 @@ exports.getCommentsByGameId = async (req, res) => {
   }
 };
 
-
 exports.getCommentsByUserId = async (req, res) => {
   try {
-    const { userId } = req.params
-
+    const { userId } = req.params;
     const comments = await Comment.findAll({ where: { UserId: userId } });
 
     res.status(200).json(comments);
@@ -38,49 +32,51 @@ exports.getCommentsByUserId = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 exports.editComment = async (req, res) => {
-  try{
-    const { text, rating } = req.body
-    const { commentId } = req.params
-    const userId = req.user.id
+  try {
+    const { text, rating } = req.body;
+    const { commentId } = req.params;
+    const userId = req.user.id;
 
-    if(rating >= 0 && rating <= 5)  {
+    if (rating >= 0 && rating <= 5) {
+      const editedComment = await Comment.update(
+        { text, rating },
+        { where: { id: commentId, UserId: userId } }
+      );
 
-      const targetComment = await Comment.findOne({where:{ id: commentId, UserId:userId  }})
-      if(targetComment){
-        const editedComment = await Comment.update({text: text, rating:rating}, {where:  { id: commentId, UserId: userId}})
-        res.status(200).json({ message: 'Comment updated successfully' });
-      }else{
-        res.status(400).json({message:"This is not your Comment"})
+      if (editedComment[0] === 0) {
+        return res.status(400).json({ message: 'This is not your comment' });
       }
-    }else{
-      res.status(400).json({ message: 'Rating must be beetween 0 and 5' });
+
+      res.status(200).json({ message: 'Comment updated successfully' });
+    } else {
+      res.status(400).json({ message: 'Rating must be between 0 and 5' });
     }
-  }catch (err) {
+  } catch (err) {
     res.status(500).json({ message: 'Internal server error' });
   }
-
-}
+};
 
 exports.createComment = async (req, res) => {
   try {
     const { text, rating } = req.body;
     const { gameId } = req.params;
     const userId = req.user.id;
-    
-    if(rating >= 0 && rating <= 5)  {
 
-      const findComment = await Comment.findOne({where:{ GameId: gameId, UserId: userId}})
+    if (rating >= 0 && rating <= 5) {
+      const findComment = await Comment.findOne({
+        where: { GameId: gameId, UserId: userId }
+      });
 
-      if(findComment){
-        res.status(400).json({ message: 'Too many comments' });
-      }else{
-        await Comment.create({ text, rating, UserId: userId, GameId: gameId })
-        res.status(201).json({ message: 'Comment created successfully' });
+      if (findComment) {
+        return res.status(400).json({ message: 'Too many comments' });
       }
 
-    }else{
-      res.status(400).json({ message: 'Rating must be beetween 0 and 5' });
+      await Comment.create({ text, rating, UserId: userId, GameId: gameId });
+      res.status(201).json({ message: 'Comment created successfully' });
+    } else {
+      res.status(400).json({ message: 'Rating must be between 0 and 5' });
     }
   } catch (err) {
     res.status(500).json({ message: 'Internal server error' });
@@ -91,16 +87,17 @@ exports.deleteComment = async (req, res) => {
   try {
     const { commentId } = req.params;
     const userId = req.user.id;
-    
-    const comment = await Comment.findOne({where:{ id: commentId, UserId: userId}})
 
-    if(!comment){
-      res.status(400).json({ message: 'Comment not found' });
-    }else{
-      await Comment.destroy({where:{id : commentId}})
-      res.status(200).json({ message: 'Comment deleted' });
+    const comment = await Comment.findOne({
+      where: { id: commentId, UserId: userId }
+    });
+
+    if (!comment) {
+      return res.status(400).json({ message: 'Comment not found' });
     }
 
+    await Comment.destroy({ where: { id: commentId } });
+    res.status(200).json({ message: 'Comment deleted' });
   } catch (err) {
     res.status(500).json({ message: 'Internal server error' });
   }
