@@ -3,7 +3,7 @@ const Session = require('../models/Session');
 const {createAccessToken, createCookie} = require("../middlewares/createToken")
 require('dotenv').config();
 
-const checkAuth = async (req, res, next) => {
+checkAuth = async (req, res, next) => {
   const token = req.cookies.token
   try{
     var user = jwt.decode(token)

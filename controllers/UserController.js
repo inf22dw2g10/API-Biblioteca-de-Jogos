@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Comment = require('../models/Comment');
 const Session = require('../models/Session');
+const Game = require('../models/Game');
 const {createAccessToken, createRefreshToken, createCookie} = require("../middlewares/createToken")
 require('dotenv').config();
 const axios = require('axios');
@@ -263,6 +264,42 @@ exports.deleteMyAccount= async (req,res) =>{
     const deletedUser = await User.destroy({where:{ id: req.user.id}})
     res.clearCookie("token")
     res.status(200).json({deletedUser})
+  }catch(error){
+    res.status(500).json({ message: 'An error occurred while retrieving the user.' });
+  }
+
+},
+exports.addGame = async (req,res) =>{
+  const user = req.user
+  var { gameId } = req.params
+  var gameId = parseInt(gameId)
+  try {
+    const dbUser = await User.findByPk(user.id)
+    const findGame = await Game.findByPk(gameId)
+    newArr = dbUser.games.games
+    if(findGame){
+
+      if(newArr.includes(gameId)){
+        console.log("tem")
+        res.status(500).json({ message: 'An error occurred while retrieving the user.' });
+      }else{
+        
+        
+        newArr.push(gameId)
+        newJson = {
+          "games": newArr
+        }
+
+        const updateUser = await User.update({games: newJson},{where:{id : user.id}})
+        res.status(200).json({message:"User games updated"})
+      }
+    }else{
+      res.status(500).json({ message: 'An error occurred while retrieving the user.' });
+    }
+    
+    
+    
+
   }catch(error){
     res.status(500).json({ message: 'An error occurred while retrieving the user.' });
   }

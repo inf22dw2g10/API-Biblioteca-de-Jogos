@@ -11,6 +11,7 @@ router.get('/logout', checkAuth, UserController.logout);
 
 router.get('/mydata',checkAuth, UserController.userData);
 
+router.patch('/addGame/:gameId', checkAuth, UserController.addGame)
 router.patch('/changePassword', checkAuth, UserController.changePW)
 router.patch('/changeName', checkAuth, UserController.changeName)
 router.patch("/createPW",checkAuth, UserController.createPW)
