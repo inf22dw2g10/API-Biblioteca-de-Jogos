@@ -102,86 +102,96 @@ exports.authGithub = (req, res) => {
   }
 };
 
-exports.authGithubCallback = async (req, res) => {
+exports.authGithubCallback = async (req,res) => {
   try {
+    // Get the authorization code from the query parameters
     const code = req.query.code;
-
-    const response = await axios.post('https://github.com/login/oauth/access_token', {
+    // Exchange the authorization code for an access token
+    axios.post('https://github.com/login/oauth/access_token', {
       client_id: process.env.GITHUB_CLIENT_ID,
       client_secret: process.env.GITHUB_CLIENT_SECRET,
-      code: code,
-    });
+      code: code
+    })
+    .then(function  (response) {
+      const gitAccessToken = response.data.split("=")[1].split("&")[0]
+      axios.get("https://api.github.com/user/emails", {headers: { Authorization: `Bearer ${gitAccessToken}` } })
+      .then(async function (response) {
 
-    const gitAccessToken = response.data.split("=")[1].split("&")[0];
-
-    const emailResponse = await axios.get("https://api.github.com/user/emails", {
-      headers: { Authorization: `Bearer ${gitAccessToken}` },
-    });
-
-    if (req.cookies.token) {
-      const UserId = jwt.decode(req.cookies.token).id;
-      const deleteSession = await Session.destroy({ where: { accessToken: req.cookies.token } });
-      res.clearCookie("token");
-    }
-
-    const userEmail = emailResponse.data[0].email;
-
-    let user = await User.findOne({ where: { email: userEmail } });
-
-    if (!user) {
-      const gitUserResponse = await axios.get("https://api.github.com/user", {
-        headers: { Authorization: `Bearer ${gitAccessToken}` },
-      });
-
-      const newUsername = gitUserResponse.data.login;
-
-      const newUser = await User.create({
-        username: newUsername,
-        email: userEmail,
-        gitHubToken: gitAccessToken,
-      });
-
-      const accessToken = createAccessToken(newUser.id, newUser.username, newUser.email);
-      const refreshToken = createRefreshToken(newUser.id, newUser.username, newUser.email);
-
-      const newSession = await Session.create({
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-        expirationDate: jwt.decode(refreshToken).exp * 1000,
-        UserId: newUser.id,
-      });
-
-      createCookie(res, accessToken, jwt.decode(refreshToken).exp);
-      res.status(201).json({ message: "Logged In" });
-    } else {
-      const existingUser = await User.update(
-        {
-          gitHubToken: gitAccessToken,
-        },
-        {
-          where: {
-            id: user.id,
-          },
+        if(req.cookies.token){
+          const UserId = jwt.decode(req.cookies.token).id
+          const deletSession = await Session.destroy({where: { accessToken: req.cookies.token }})
+          res.clearCookie("token")
         }
-      );
 
-      const accessToken = createAccessToken(user.id, user.username, user.email);
-      const refreshToken = createRefreshToken(user.id, user.username, user.email);
+        const userEmail = response.data[0].email 
 
-      const newSession = await Session.create({
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-        expirationDate: jwt.decode(refreshToken).exp * 1000,
-        UserId: user.id,
+        var user = await User.findOne({where:{ email : userEmail}})
+        if(!user){    
+          // Registar
+          axios.get("https://api.github.com/user", {headers: { Authorization: `Bearer ${gitAccessToken}` } })
+          .then(async function(response){
+            var newUsername = response.data.login
+
+            var newUser = await User.create({
+              username: newUsername,
+              email : userEmail,
+              gitHubToken: gitAccessToken
+            })
+            
+
+            const accessToken = createAccessToken(newUser.id, newUser.username , newUser.email)
+            const refreshToken = createRefreshToken(newUser.id, newUser.username , newUser.email)
+            
+            const newSession = await Session.create({
+              accessToken: accessToken,
+              refreshToken: refreshToken,
+              expirationDate: jwt.decode(refreshToken).exp*1000,
+              UserId: newUser.id,
+            })  
+
+            createCookie(res, accessToken, jwt.decode(refreshToken).exp)
+            res.status(201).json({message:"Logged In"})
+
+          }).catch(function(err){
+            res.status(500).json({ message: err });
+          });
+        }else{
+          //Login
+          var existingUser = await User.update({
+            gitHubToken:gitAccessToken
+          },
+          {where:{
+            id: user.id
+          }})
+
+          const accessToken = createAccessToken(user.id, user.username , user.email)
+          const refreshToken = createRefreshToken(user.id, user.username , user.email)
+          
+          const newSession = await Session.create({
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            expirationDate: jwt.decode(refreshToken).exp*1000,
+            UserId: user.id,
+          })
+
+          createCookie(res, accessToken, jwt.decode(refreshToken).exp)
+          res.status(200).json({message:"Logged In"})
+        }
+        
+      }).catch(function(err){
+        res.status(500).json({ message: err });
       });
-
-      createCookie(res, accessToken, jwt.decode(refreshToken).exp);
-      res.status(200).json({ message: "Logged In" });
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    })
+    .catch(function (error) {
+      res.status(500).json({ message: err });
+    });
+    
+  } catch (err) {
+    res.status(500).json({
+      error: 'Internal server error'
+    });
   }
-};
+}
 
 exports.changePW = async (req, res) => {
   try {
