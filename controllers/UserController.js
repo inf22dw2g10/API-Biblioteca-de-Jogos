@@ -27,15 +27,20 @@ exports.userData = async (req, res) => {
 
 exports.register = async (req, res) => {
   try {
-    const checkUser = await User.findOne({ where: { email: req.body.email } });
-    if (!checkUser) {
-      const hashedPassword = await bcrypt.hash(req.body.password, 10);
-      const user = await User.create({
-        username: req.body.username,
-        email: req.body.email,
-        password: hashedPassword,
-      });
-      res.status(201).json({ username: 'User Created.' });
+    const checkEmail = await User.findOne({ where: { email: req.body.email } });
+    if (!checkEmail) {
+      const checkUsername = await User.findOne({ where: { username: req.body.username } });
+      if(!checkUsername){
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const user = await User.create({
+          username: req.body.username,
+          email: req.body.email,
+          password: hashedPassword,
+        });
+        res.status(201).json({ username: 'User Created.' });
+      }else {
+        res.status(409).json({ username: 'Username already taken, try a different one' });
+      }
     } else {
       res.status(409).json({ username: 'Email already registered' });
     }
@@ -57,7 +62,13 @@ exports.logout = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const user = await User.findOne({ where: { email: req.body.email } });
+    const user = await User.findOne({ 
+      $or:{
+        where: { email: req.body.userid },
+        where: { username: req.body.userid },
+      }
+      
+     });
     if (!user) {
       return res.status(403).json({ message: 'User not found' });
     }
