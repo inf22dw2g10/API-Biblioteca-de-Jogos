@@ -263,22 +263,28 @@ exports.addGame = async (req, res) => {
   try {
     const dbUser = await User.findByPk(user.id);
     const findGame = await Game.findByPk(gameIdInt);
-
     if (findGame) {
       const gamesArr = dbUser.games.games;
+      console.log(gamesArr)
 
       if (gamesArr.includes(gameIdInt)) {
         return res.status(400).json({ message: 'Game already added' });
       }
+      
+      if(dbUser.dataValues.balance >= findGame.dataValues.price){
+        gamesArr.push(gameIdInt);
+        console.log(gamesArr)
+        newJson = {"games": gamesArr}
 
-      gamesArr.push(gameIdInt);
-
-      await User.update(
-        { games: { games: gamesArr } },
-        { where: { id: user.id } }
-      );
-
-      return res.status(200).json({ message: 'User games updated' });
+        console.log(dbUser.dataValues.balance - findGame.dataValues.price)
+        await User.update(
+          { games: newJson, balance: dbUser.dataValues.balance - findGame.dataValues.price},{where:{id:user.id}}
+        );
+        
+        return res.status(200).json({ message: 'User games updated' });
+      }else{
+        return res.status(400).json({ message: 'Not enough balance' });
+      }
     } else {
       return res.status(404).json({ message: 'Game not found' });
     }
@@ -322,9 +328,34 @@ exports.userProfile = async (req, res) => {
       avatar: dbUser.dataValues.avatar,
       games: gamesArr,
     });
+    
   } catch (error) {
     res.status(500).json({ message: 'An error occurred while retrieving the user.' });
   }
 };
+exports.balance = async (req,res)=> {
+  const user = req.user
+  try{
+    const dbUser = await User.findByPk(user.id)
 
+    res.status(200).json({balance: dbUser.dataValues.balance})
+
+  }catch (error) {
+    res.status(500).json({ message: 'An error occurred while retrieving the user.' });
+  }
+}
+exports.addBalance = async (req,res)=> {
+  const user = req.user
+  const { depositValue } = req.body
+  try{
+    const dbUser = await User.findByPk(user.id)
+    await dbUser.update({balance: dbUser.dataValues.balance + depositValue})
+    
+
+    res.status(200).json({message: 'Balance updated'})
+
+  }catch (error) {
+    res.status(500).json({ message: 'An error occurred while retrieving the user.' });
+  }
+}
 

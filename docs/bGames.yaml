@@ -1,8 +1,3 @@
-openapi: 3.0.0
-info:
-  title: Games API
-  version: 1.0.0
-  description: Games API
 paths:
   /games/:
     get:

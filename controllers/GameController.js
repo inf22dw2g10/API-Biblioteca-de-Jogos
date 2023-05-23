@@ -1,9 +1,28 @@
 const Game = require('../models/Game');
+const sequelize = require('../database');
 
 exports.getAllGames = async (req, res) => {
   try {
     const games = await Game.findAll();
 
+    if (games.length !== 0) {
+      res.status(200).json(games);
+    } else {
+      res.status(404).json({ message: 'No games found' });
+    }
+  } catch (err) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+exports.searhGames = async (req, res) => {
+  const {game} = req.query
+  try {
+    const games = await Game.findAll({where:{
+    
+      title: sequelize.where(sequelize.fn('LOWER', sequelize.col('title')), 'LIKE', '%' + game.toLowerCase() + '%')
+
+    }});
     if (games.length !== 0) {
       res.status(200).json(games);
     } else {
@@ -53,24 +72,6 @@ exports.updateGame = async (req, res) => {
     await game.update({ title, description, year, price, cover });
 
     res.status(200).json({ message: 'Game updated successfully' });
-  } catch (err) {
-    res.status(500).json({ message: 'Internal server error' });
-  }
-};
-
-exports.changePrice = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { newPrice } = req.body;
-    const game = await Game.findByPk(id);
-
-    if (!game) {
-      return res.status(404).json({ message: 'Game not found' });
-    }
-
-    await game.update({ price: newPrice });
-
-    res.status(200).json({ message: 'Price updated successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Internal server error' });
   }

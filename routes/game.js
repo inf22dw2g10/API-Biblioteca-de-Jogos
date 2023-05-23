@@ -5,10 +5,13 @@ const checkAuth = require('../middlewares/checkAuth');
 const checkPerm = require('../middlewares/checkPerm');
 
 router.get('/', GameController.getAllGames);
+router.get('/search', GameController.searhGames);
 router.get('/:id', GameController.getGameById);
+
+
+// Necessita de permissões de administrador
 router.post('/',checkAuth, checkPerm, GameController.createGame);
 router.put('/:id',checkAuth, checkPerm, GameController.updateGame);
-router.patch('/:id',checkAuth, checkPerm, GameController.changePrice);
 router.delete('/:id',checkAuth, checkPerm, GameController.deleteGame);
 
 module.exports = router;
