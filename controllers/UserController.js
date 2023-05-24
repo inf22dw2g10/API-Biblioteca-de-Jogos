@@ -60,6 +60,9 @@ exports.logout = async (req, res) => {
   }
 };
 
+exports.checkLogin = async(req,res) => {
+  res.status(200).json({ isLoggedIn:true });
+}
 exports.login = async (req, res) => {
   try {
     const user = await User.findOne({ 

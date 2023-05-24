@@ -9,11 +9,18 @@ const userRoutes = require('./routes/user');
 const gameRoutes = require('./routes/game');
 const commentRoutes = require('./routes/comment');
 const checkAuth = require('./middlewares/checkAuth');
-
+const corsOptions = {
+  origin: 'http://localhost:3006',
+  methods: 'GET, POST', 
+  allowedHeaders: 'Content-Type, Authorization', 
+  credentials:true,
+};
 
 
 const app = express();
-app.use(cors());
+
+
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(bodyParser.json());
 //app.use(bodyParser.urlencoded({ extended: true }));
