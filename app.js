@@ -11,7 +11,6 @@ const commentRoutes = require('./routes/comment');
 const checkAuth = require('./middlewares/checkAuth');
 
 
-
 const app = express();
 app.use(cors());
 app.use(cookieParser());

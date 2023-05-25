@@ -29,7 +29,8 @@ exports.register = async (req, res) => {
   try {
     const checkUser = await User.findOne({ where: { email: req.body.email } });
     if (!checkUser) {
-      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      const saltRounds = 10; // Number of rounds for password hashing
+      const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
       const user = await User.create({
         username: req.body.username,
         email: req.body.email,
@@ -152,7 +153,7 @@ exports.authGithubCallback = async (req, res) => {
       });
 
       createCookie(res, accessToken, jwt.decode(refreshToken).exp);
-      res.status(201).json({ message: "Logged In" });
+      res.redirect('http://localhost:3006/about');
     } else {
       const existingUser = await User.update(
         {
@@ -176,7 +177,7 @@ exports.authGithubCallback = async (req, res) => {
       });
 
       createCookie(res, accessToken, jwt.decode(refreshToken).exp);
-      res.status(200).json({ message: "Logged In" });
+      res.redirect('http://localhost:3006/about');
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
