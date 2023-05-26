@@ -4,9 +4,9 @@ const sequelize = require('../database');
 exports.getAllGames = async (req, res) => {
   try {
     const games = await Game.findAll();
-
     if (games.length !== 0) {
       res.status(200).json(games);
+      
     } else {
       res.status(404).json({ message: 'No games found' });
     }
@@ -27,6 +27,7 @@ exports.searhGames = async (req, res) => {
       res.status(200).json(games);
     } else {
       res.status(404).json({ message: 'No games found' });
+
     }
   } catch (err) {
     res.status(500).json({ message: 'Internal server error' });

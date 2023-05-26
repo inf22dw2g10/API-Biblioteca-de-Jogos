@@ -8,10 +8,9 @@ const sequelize = require('./database');
 const userRoutes = require('./routes/user');
 const gameRoutes = require('./routes/game');
 const commentRoutes = require('./routes/comment');
-const checkAuth = require('./middlewares/checkAuth');
 const corsOptions = {
   origin: 'http://localhost:3006',
-  methods: 'GET, POST', 
+  methods: 'GET, POST, PATCH, DELETE, PUT' , 
   allowedHeaders: 'Content-Type, Authorization', 
   credentials:true,
 };

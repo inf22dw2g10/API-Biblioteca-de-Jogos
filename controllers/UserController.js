@@ -87,8 +87,8 @@ exports.login = async (req, res) => {
         res.clearCookie('token');
       }
 
-      const accessToken = createAccessToken(user.id, user.username, user.email);
-      const refreshToken = createRefreshToken(user.id, user.username, user.email);
+      const accessToken = createAccessToken(user.id, user.username , user.email,user.admin);
+      const refreshToken = createRefreshToken(user.id, user.username , user.email,user.admin);
 
       const newSession = await Session.create({
         accessToken: accessToken,
@@ -110,7 +110,7 @@ exports.login = async (req, res) => {
 exports.authGithub = (req, res) => {
   try {
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&scope=user:email`;
-    res.redirect(githubAuthUrl);
+    res.status(200).json({callback: githubAuthUrl});
   } catch (err) {
     res.status(500).json({ message: 'An error occurred while retrieving the user.' });
   }
@@ -153,8 +153,8 @@ exports.authGithubCallback = async (req,res) => {
             })
             
 
-            const accessToken = createAccessToken(newUser.id, newUser.username , newUser.email)
-            const refreshToken = createRefreshToken(newUser.id, newUser.username , newUser.email)
+            const accessToken = createAccessToken(newUser.id, newUser.username , newUser.email, newUser.admin)
+            const refreshToken = createRefreshToken(newUser.id, newUser.username , newUser.email, newUser.admin)
             
             const newSession = await Session.create({
               accessToken: accessToken,
@@ -164,7 +164,9 @@ exports.authGithubCallback = async (req,res) => {
             })  
 
             createCookie(res, accessToken, jwt.decode(refreshToken).exp)
-            res.status(201).json({message:"Logged In"})
+            res.status(201).redirect("http://localhost:3006/check-login")
+            
+
 
           }).catch(function(err){
             res.status(500).json({ message: err });
@@ -178,8 +180,8 @@ exports.authGithubCallback = async (req,res) => {
             id: user.id
           }})
 
-          const accessToken = createAccessToken(user.id, user.username , user.email)
-          const refreshToken = createRefreshToken(user.id, user.username , user.email)
+          const accessToken = createAccessToken(user.id, user.username , user.email, user.admin)
+          const refreshToken = createRefreshToken(user.id, user.username , user.email, user.admin)
           
           const newSession = await Session.create({
             accessToken: accessToken,
@@ -189,7 +191,7 @@ exports.authGithubCallback = async (req,res) => {
           })
 
           createCookie(res, accessToken, jwt.decode(refreshToken).exp)
-          res.status(200).json({message:"Logged In"})
+          res.status(200).redirect("http://localhost:3006/check-login")
         }
         
       }).catch(function(err){
