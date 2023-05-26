@@ -26,7 +26,7 @@ exports.searhGames = async (req, res) => {
     if (games.length !== 0) {
       res.status(200).json(games);
     } else {
-      res.status(404).json({ message: 'No games found' });
+      res.status(200).json();
 
     }
   } catch (err) {
