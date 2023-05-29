@@ -60,25 +60,22 @@ exports.logout = async (req, res) => {
   }
 };
 
-exports.checkLogin = async(req,res) => {
-  res.status(200).json({ isLoggedIn:true });
-}
 exports.login = async (req, res) => {
+  console.log(req.body)
   try {
-    const user = await User.findOne({ 
-      $or:{
-        where: { email: req.body.userid },
-        where: { username: req.body.userid },
-      }
-      
-     });
+    let user
+    if(req.body.email == null){
+      user = await User.findOne({ where: { username: req.body.username }});
+    }else{
+      user = await User.findOne({ where: { email: req.body.email }});
+    }
     if (!user) {
       return res.status(403).json({ message: 'User not found' });
     }
     if (user.password) {
       const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
       if (!isPasswordValid) {
-        return res.status(401).json({ message: 'Invalid email or password.' });
+        return res.status(401).json({ message: 'Invalid username or password.' });
       }
 
       if (req.cookies.token) {
@@ -164,7 +161,7 @@ exports.authGithubCallback = async (req,res) => {
             })  
 
             createCookie(res, accessToken, jwt.decode(refreshToken).exp)
-            res.status(201).redirect("http://localhost:3006/check-login")
+            res.status(201).redirect("http://localhost:3000/check-login")
             
 
 
@@ -191,7 +188,7 @@ exports.authGithubCallback = async (req,res) => {
           })
 
           createCookie(res, accessToken, jwt.decode(refreshToken).exp)
-          res.status(200).redirect("http://localhost:3006/check-login")
+          res.status(200).redirect("http://localhost:3000/check-login")
         }
         
       }).catch(function(err){

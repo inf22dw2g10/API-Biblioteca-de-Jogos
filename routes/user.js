@@ -14,8 +14,6 @@ router.post('/register', UserController.register);
 router.post('/login', UserController.login);
 
 
-
-router.get('/checkLogin', checkAuth, UserController.checkLogin);
 router.get('/logout', checkAuth, UserController.logout);
 router.get('/mydata',checkAuth, UserController.userData);
 router.patch('/addGame/:gameId', checkAuth, UserController.addGame) // New

@@ -9,7 +9,7 @@ const userRoutes = require('./routes/user');
 const gameRoutes = require('./routes/game');
 const commentRoutes = require('./routes/comment');
 const corsOptions = {
-  origin: 'http://localhost:3006',
+  origin: 'http://localhost:3000',
   methods: 'GET, POST, PATCH, DELETE, PUT' , 
   allowedHeaders: 'Content-Type, Authorization', 
   credentials:true,
@@ -31,7 +31,7 @@ const swaggerDefinition = {
     description: "Biblioteca de Jogos",
     contact: { name: "Biblioteca de Jogos" },
   },
-  servers: [ {url: "http://localhost:3000"}],
+  servers: [ {url: "http://localhost:5000"}],
   components: {
     securitySchemes: {
       BearerAuth: { type: "http", scheme: "bearer"},
