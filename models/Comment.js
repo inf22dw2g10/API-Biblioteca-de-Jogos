@@ -11,7 +11,7 @@ Comment.init(
       allowNull: false,
     },
     rating:{
-      type: DataTypes.INTEGER,
+      type: DataTypes.BOOLEAN,
       allowNull:false,
     },
   },

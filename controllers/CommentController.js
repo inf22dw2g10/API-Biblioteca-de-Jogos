@@ -39,20 +39,17 @@ exports.editComment = async (req, res) => {
     const { commentId } = req.params;
     const userId = req.user.id;
 
-    if (rating >= 0 && rating <= 5) {
-      const editedComment = await Comment.update(
-        { text, rating },
-        { where: { id: commentId, UserId: userId } }
-      );
+    const editedComment = await Comment.update(
+      { text, rating },
+      { where: { id: commentId, UserId: userId } }
+    );
 
-      if (editedComment[0] === 0) {
-        return res.status(400).json({ message: 'This is not your comment' });
-      }
-
-      res.status(200).json({ message: 'Comment updated successfully' });
-    } else {
-      res.status(400).json({ message: 'Rating must be between 0 and 5' });
+    if (editedComment[0] === 0) {
+      return res.status(400).json({ message: 'This is not your comment' });
     }
+
+    res.status(200).json({ message: 'Comment updated successfully' });
+    
   } catch (err) {
     res.status(500).json({ message: 'Internal server error' });
   }
@@ -64,20 +61,17 @@ exports.createComment = async (req, res) => {
     const { gameId } = req.params;
     const userId = req.user.id;
 
-    if (rating >= 0 && rating <= 5) {
-      const findComment = await Comment.findOne({
-        where: { GameId: gameId, UserId: userId }
-      });
+    const findComment = await Comment.findOne({
+      where: { GameId: gameId, UserId: userId }
+    });
 
-      if (findComment) {
-        return res.status(400).json({ message: 'Too many comments' });
-      }
-
-      await Comment.create({ text, rating, UserId: userId, GameId: gameId });
-      res.status(201).json({ message: 'Comment created successfully' });
-    } else {
-      res.status(400).json({ message: 'Rating must be between 0 and 5' });
+    if (findComment) {
+      return res.status(400).json({ message: 'Too many comments' });
     }
+
+    await Comment.create({ text, rating, UserId: userId, GameId: gameId });
+    res.status(201).json({ message: 'Comment created successfully' });
+
   } catch (err) {
     res.status(500).json({ message: 'Internal server error' });
   }
