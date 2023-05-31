@@ -3,6 +3,8 @@ const router = express.Router();
 const CommentController = require('../controllers/CommentController');
 const checkAuth = require('../middlewares/checkAuth');
 
+// Comment routes
+
 router.get('/:commentId', CommentController.getComment);
 router.get('/game/:gameId', CommentController.getCommentsByGameId);
 router.get('/user/:userId', CommentController.getCommentsByUserId);

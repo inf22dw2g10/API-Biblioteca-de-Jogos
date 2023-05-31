@@ -8,18 +8,27 @@ const { createAccessToken, createRefreshToken, createCookie } = require('../midd
 require('dotenv').config();
 const axios = require('axios');
 
+
+exports.myAvatar = async (req, res) => {
+  const user = req.user;
+  try{
+    const userAvatar = await User.findByPk(req.user.id, {
+      attributes: ['avatar']
+    });
+    res.status(200).json({ userAvatar });
+  } catch (err) {
+    res.status(500).json({ message: 'An error occurred while logging in.' });
+  }
+  
+}
 exports.userData = async (req, res) => {
   try {
     const user = req.user;
 
-    const userData = await User.findByPk(req.user.id);
-    const userComments = await Comment.findAll({
-      where: {
-        UserId: req.user.id,
-      },
+    const userData = await User.findByPk(req.user.id, {
+      attributes: { exclude: ['password', 'gitHubToken', 'balance','createdAt','updatedAt'] }
     });
-
-    res.status(200).json({ userData, userComments });
+    res.status(200).json({ userData });
   } catch (err) {
     res.status(500).json({ message: 'An error occurred while logging in.' });
   }

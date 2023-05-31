@@ -4,6 +4,7 @@ const UserController = require('../controllers/UserController');
 const checkAuth = require('../middlewares/checkAuth');
 
 
+// User routes
 
 router.get('/games/:userId', UserController.userGames); // New
 router.get('/profile/:userId', UserController.userProfile); //New
@@ -21,6 +22,7 @@ router.patch('/changePassword', checkAuth, UserController.changePW)
 router.patch('/changeName', checkAuth, UserController.changeName)
 router.patch("/createPW",checkAuth, UserController.createPW)
 
+router.get('/myAvatar', checkAuth, UserController.myAvatar) // New
 router.get('/balance', checkAuth, UserController.balance) // New
 router.patch('/addBalance', checkAuth, UserController.addBalance) // New
 

@@ -21,7 +21,7 @@ Game.init(
     year: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    },
+    }
   },
   {
     timestamps: false,

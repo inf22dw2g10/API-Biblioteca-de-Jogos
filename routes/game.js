@@ -4,6 +4,8 @@ const GameController = require('../controllers/GameController');
 const checkAuth = require('../middlewares/checkAuth');
 const checkPerm = require('../middlewares/checkPerm');
 
+//Game routes
+
 router.get('/', GameController.getAllGames);
 router.get('/search', GameController.searhGames);
 router.get('/:id', GameController.getGameById);
