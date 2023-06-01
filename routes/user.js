@@ -6,8 +6,9 @@ const checkAuth = require('../middlewares/checkAuth');
 
 // User routes
 
-router.get('/games/:userId', UserController.userGames); // New
-router.get('/profile/:userId', UserController.userProfile); //New
+router.get('/games/:userId', checkAuth,  UserController.userGames); // New
+router.get('/profile/:userId',checkAuth, UserController.userProfile); //New
+router.get('/search', checkAuth, UserController.searhUsers); //New
 
 router.get('/auth/github', UserController.authGithub)
 router.get("/auth/github/callback", UserController.authGithubCallback)
@@ -22,7 +23,7 @@ router.patch('/changePassword', checkAuth, UserController.changePW)
 router.patch('/changeName', checkAuth, UserController.changeName)
 router.patch("/createPW",checkAuth, UserController.createPW)
 
-router.get('/myAvatar', checkAuth, UserController.myAvatar) // New
+router.get('/myavatar',checkAuth, UserController.myAvatar) // New
 router.get('/balance', checkAuth, UserController.balance) // New
 router.patch('/addBalance', checkAuth, UserController.addBalance) // New
 

@@ -6,11 +6,13 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: Jogos
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - '3306:3306'
 
   api:
-    build:
-      context: ./api
-      dockerfile: Dockerfile
+    build: .
     ports:
       - '5000:5000'
     depends_on:
@@ -21,11 +23,5 @@ services:
       DB_PASSWORD: 123456
       DB_NAME: Jogos
 
-  frontend:
-    build:
-      context: ./react
-      dockerfile: Dockerfile
-    ports:
-      - '3000:3000'
-    depends_on:
-      - api
+volumes:
+  db_data:

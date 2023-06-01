@@ -39,6 +39,10 @@ exports.editComment = async (req, res) => {
     const { commentId } = req.params;
     const userId = req.user.id;
 
+    if (typeof rating  != "boolean"){
+      res.status(500).json({ message: 'Internal server error' });
+      return
+    }
     const editedComment = await Comment.update(
       { text, rating },
       { where: { id: commentId, UserId: userId } }
@@ -60,7 +64,10 @@ exports.createComment = async (req, res) => {
     const { text, rating } = req.body;
     const { gameId } = req.params;
     const userId = req.user.id;
-
+    if (typeof rating  != "boolean"){
+      res.status(500).json({ message: 'Internal server error' });
+      return
+    }
     const findComment = await Comment.findOne({
       where: { GameId: gameId, UserId: userId }
     });

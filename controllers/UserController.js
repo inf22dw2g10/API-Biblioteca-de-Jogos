@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const sequelize = require('../database');
 const User = require('../models/User');
 const Comment = require('../models/Comment');
 const Session = require('../models/Session');
@@ -170,8 +171,7 @@ exports.authGithubCallback = async (req,res) => {
             })  
 
             createCookie(res, accessToken, jwt.decode(refreshToken).exp)
-            res.status(201).redirect("http://localhost:3000/check-login")
-            
+            res.status(201).redirect(`http://localhost:3000/check-login`)
 
 
           }).catch(function(err){
@@ -197,7 +197,7 @@ exports.authGithubCallback = async (req,res) => {
           })
 
           createCookie(res, accessToken, jwt.decode(refreshToken).exp)
-          res.status(200).redirect("http://localhost:3000/check-login")
+          res.status(200).redirect(`http://localhost:3000/check-login`)
         }
         
       }).catch(function(err){
@@ -347,6 +347,7 @@ exports.userProfile = async (req, res) => {
   const { userId } = req.params;
 
   try {
+    let commentsArray = []
     const dbUser = await User.findByPk(userId);
     const gamesArr = await Promise.all(
       dbUser.games.games.map(async (element) => {
@@ -354,11 +355,18 @@ exports.userProfile = async (req, res) => {
         return findGame.dataValues;
       })
     );
+    const comments = await Comment.findAll({ where: { UserId: userId } });
+    
+    comments.forEach(comment => {
+      commentsArray.push(comment.dataValues)
+    });
+    console.log(commentsArray.reverse())
 
     res.status(200).json({
       username: dbUser.dataValues.username,
       avatar: dbUser.dataValues.avatar,
       games: gamesArr,
+      comments: commentsArray,
     });
     
   } catch (error) {
@@ -391,3 +399,18 @@ exports.addBalance = async (req,res)=> {
   }
 }
 
+exports.searhUsers = async (req, res) => {
+  const {user} = req.query
+  try {
+    const users = await User.findAll({where:{
+      username: sequelize.where(sequelize.fn('LOWER', sequelize.col('username')), 'LIKE', '%' + user.toLowerCase() + '%')
+    }});
+    if (users.length !== 0) {
+      res.status(200).json(users);
+    } else {
+      res.status(200).json();
+    }
+  } catch (err) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};

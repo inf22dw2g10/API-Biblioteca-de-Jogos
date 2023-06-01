@@ -6,12 +6,16 @@ User.init(
   {
     avatar:{
       type:DataTypes.STRING,
-      defaultValue: "https://play-lh.googleusercontent.com/XmM0qNgU3jKHOa8JqlsSS9XQqhN3rB4sYRg1B-bSWvlMpk4ACU2yDFkG1REKwGZfyBTJ=s256-rw"
+      defaultValue: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png"
     },
     username: {
       type: DataTypes.STRING,
       allowNull: false,
       unique:true
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     password: {
       type: DataTypes.STRING,

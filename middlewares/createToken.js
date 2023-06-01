@@ -18,6 +18,6 @@ exports.createCookie = (res,token, exp)=>{
   res.cookie("token",token,{
     httpOnly:false,
     expires:new Date(exp*1000),
-    sameSite: 'Lax'
+    sameSite: 'Lax',
   })
 }

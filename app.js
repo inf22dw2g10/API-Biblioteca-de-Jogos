@@ -9,7 +9,7 @@ const userRoutes = require('./routes/user');
 const gameRoutes = require('./routes/game');
 const commentRoutes = require('./routes/comment');
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: true,
   methods: 'GET, POST, PATCH, DELETE, PUT' , 
   allowedHeaders: 'Content-Type, Authorization', 
   credentials:true,
