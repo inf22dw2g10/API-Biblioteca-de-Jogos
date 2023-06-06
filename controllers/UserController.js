@@ -27,8 +27,9 @@ exports.userData = async (req, res) => {
     const user = req.user;
 
     const userData = await User.findByPk(req.user.id, {
-      attributes: { exclude: ['password', 'gitHubToken', 'balance','createdAt','updatedAt'] }
+      attributes: { exclude: ['password', 'gitHubToken', 'balance','createdAt','updatedAt','games','admin'] }
     });
+    console.log(userData)
     res.status(200).json({ userData });
   } catch (err) {
     res.status(500).json({ message: 'An error occurred while logging in.' });
@@ -360,9 +361,9 @@ exports.userProfile = async (req, res) => {
     comments.forEach(comment => {
       commentsArray.push(comment.dataValues)
     });
-    console.log(commentsArray.reverse())
 
     res.status(200).json({
+      id: dbUser.dataValues.id,
       username: dbUser.dataValues.username,
       avatar: dbUser.dataValues.avatar,
       games: gamesArr,
@@ -402,7 +403,7 @@ exports.addBalance = async (req,res)=> {
 exports.searhUsers = async (req, res) => {
   const {user} = req.query
   try {
-    const users = await User.findAll({where:{
+    const users = await User.findAll({attributes: ['username', 'id'],where:{
       username: sequelize.where(sequelize.fn('LOWER', sequelize.col('username')), 'LIKE', '%' + user.toLowerCase() + '%')
     }});
     if (users.length !== 0) {

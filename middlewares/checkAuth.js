@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const Session = require('../models/Session');
+const User = require('../models/User');
 const {createAccessToken, createCookie} = require("../middlewares/createToken")
 require('dotenv').config();
 
@@ -18,7 +19,9 @@ const checkAuth = async (req, res, next) => {
 
         if(refreshToken.exp > Date.now()/1000 ){
 
-          const accessToken = createAccessToken(user.id, user.username, user.email)
+          const dbUser = await User.findByPk(user.id)
+
+          const accessToken = createAccessToken(dbUser.dataValues.id, dbUser.dataValues.username, dbUser.dataValues.email, dbUser.dataValues.admin)
 
           const newSession = await Session.update({
             accessToken: accessToken

@@ -51,8 +51,8 @@ exports.getGameById = async (req, res) => {
 
 exports.createGame = async (req, res) => {
   try {
-    const { title, description, year, price, cover } = req.body;
-    await Game.create({ title, description, year, price, cover });
+    const { title, description, year, genre, price, cover } = req.body;
+    await Game.create({ title, description, year,genre, price, cover });
 
     res.status(201).json({ message: 'Game created successfully' });
   } catch (err) {
@@ -63,14 +63,14 @@ exports.createGame = async (req, res) => {
 exports.updateGame = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, year, price, cover } = req.body;
+    const { title, description, year, genre, price, cover } = req.body;
     const game = await Game.findOne({ where: { id } });
 
     if (!game) {
       return res.status(404).json({ message: 'Game not found' });
     }
 
-    await game.update({ title, description, year, price, cover });
+    await game.update({ title, description, year,genre, price, cover });
 
     res.status(200).json({ message: 'Game updated successfully' });
   } catch (err) {

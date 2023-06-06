@@ -39,9 +39,8 @@ exports.editComment = async (req, res) => {
     const { commentId } = req.params;
     const userId = req.user.id;
 
-    if (typeof rating  != "boolean"){
-      res.status(500).json({ message: 'Internal server error' });
-      return
+    if (rating !== 0 || rating !== 1){
+      return res.status(500).json({ message: 'Internal server error' });
     }
     const editedComment = await Comment.update(
       { text, rating },
@@ -64,9 +63,9 @@ exports.createComment = async (req, res) => {
     const { text, rating } = req.body;
     const { gameId } = req.params;
     const userId = req.user.id;
-    if (typeof rating  != "boolean"){
-      res.status(500).json({ message: 'Internal server error' });
-      return
+
+    if (rating !== 0 && rating !== 1){
+      return res.status(500).json({ message: 'Internal server error' });
     }
     const findComment = await Comment.findOne({
       where: { GameId: gameId, UserId: userId }
@@ -76,8 +75,10 @@ exports.createComment = async (req, res) => {
       return res.status(400).json({ message: 'Too many comments' });
     }
 
-    await Comment.create({ text, rating, UserId: userId, GameId: gameId });
+    await Comment.create({ text:text, rating:rating, UserId: userId, GameId: gameId });
     res.status(201).json({ message: 'Comment created successfully' });
+
+   
 
   } catch (err) {
     res.status(500).json({ message: 'Internal server error' });

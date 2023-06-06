@@ -14,9 +14,15 @@ Game.init(
     },
     cover: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     price: {
       type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    genre:{
+      type: DataTypes.STRING ,
+      allowNull: false,
     },
     year: {
       type: DataTypes.INTEGER,
