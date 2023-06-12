@@ -39,6 +39,6 @@ Session.init(
   }
 );
 
-Session.belongsTo(User);
+Session.belongsTo(User , { onDelete: 'CASCADE' });
 
 module.exports = Session;

@@ -21,7 +21,7 @@ Comment.init(
   }
 );
 
-Comment.belongsTo(User);
-Comment.belongsTo(Game);
+Comment.belongsTo(User, { onDelete: 'CASCADE' });
+Comment.belongsTo(Game , { onDelete: 'CASCADE' });
 
 module.exports = Comment;

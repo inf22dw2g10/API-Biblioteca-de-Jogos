@@ -29,7 +29,6 @@ exports.userData = async (req, res) => {
     const userData = await User.findByPk(req.user.id, {
       attributes: { exclude: ['password', 'gitHubToken', 'balance','createdAt','updatedAt','games','admin'] }
     });
-    console.log(userData)
     res.status(200).json({ userData });
   } catch (err) {
     res.status(500).json({ message: 'An error occurred while logging in.' });
@@ -72,7 +71,6 @@ exports.logout = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  console.log(req.body)
   try {
     let user
     if(req.body.email == null){
@@ -278,6 +276,24 @@ exports.changeName = async (req, res) => {
     res.status(500).json({ message: 'An error occurred while retrieving the user.' });
   }
 };
+exports.changeDescription = async (req, res) => {
+  try {
+    const user = req.user;
+    const newDescription = req.body.newDescription;
+
+    if (newDescription) {
+      await User.update(
+        { description: newDescription },
+        { where: { id: user.id } }
+      );
+      return res.status(200).json({ message: 'Description updated successfully' });
+    } else {
+      return res.status(400).json({ message: 'Error updating description' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'An error occurred while retrieving the user.' });
+  }
+};
 
 exports.deleteMyAccount = async (req, res) => {
   try {
@@ -298,7 +314,6 @@ exports.addGame = async (req, res) => {
     const findGame = await Game.findByPk(gameIdInt);
     if (findGame) {
       const gamesArr = dbUser.games.games;
-      console.log(gamesArr)
 
       if (gamesArr.includes(gameIdInt)) {
         return res.status(400).json({ message: 'Game already added' });
@@ -306,10 +321,8 @@ exports.addGame = async (req, res) => {
       
       if(dbUser.dataValues.balance >= findGame.dataValues.price){
         gamesArr.push(gameIdInt);
-        console.log(gamesArr)
         newJson = {"games": gamesArr}
 
-        console.log(dbUser.dataValues.balance - findGame.dataValues.price)
         await User.update(
           { games: newJson, balance: dbUser.dataValues.balance - findGame.dataValues.price},{where:{id:user.id}}
         );
@@ -365,6 +378,7 @@ exports.userProfile = async (req, res) => {
     res.status(200).json({
       id: dbUser.dataValues.id,
       username: dbUser.dataValues.username,
+      description: dbUser.dataValues.description,
       avatar: dbUser.dataValues.avatar,
       games: gamesArr,
       comments: commentsArray,
