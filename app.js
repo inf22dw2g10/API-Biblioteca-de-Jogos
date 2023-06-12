@@ -8,12 +8,14 @@ const sequelize = require('./database');
 const userRoutes = require('./routes/user');
 const gameRoutes = require('./routes/game');
 const commentRoutes = require('./routes/comment');
+const seed = require('./seed');
 const corsOptions = {
   origin: true,
   methods: 'GET, POST, PATCH, DELETE, PUT' , 
   allowedHeaders: 'Content-Type, Authorization', 
   credentials:true,
 };
+
 
 const app = express();
 
@@ -62,8 +64,14 @@ app.get("/", function (req, res) {
     res.sendFile(__dirname + "/public/login.html")
 });
 
+
+
+
 sequelize
   .sync()
+  .then(()=>{
+    seed.populateDatabase()
+  })
   .then(() => {
     app.listen(process.env.PORT, () => console.log(`Server running on port ${process.env.PORT}` ));
   })
