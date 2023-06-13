@@ -190,7 +190,7 @@ const gamesData = [
     {
       "title" : "Terraria",
       "description" : "Dig, fight, explore, build! Nothing is impossible in this action-packed adventure game. Four Pack also available!",
-      "cover" : "https://sm.ign.com/t/ign_pt/news/c/cities-sky/cities-skylines-2-revealed-for-current-gen-consoles-coming-l_vbne.1280.jpg",
+      "cover" : "https://gaming-cdn.com/images/products/12003/616x353/terraria-xbox-one-xbox-series-x-s-xbox-series-x-s-xbox-one-jogo-microsoft-store-estados-unidos-cover.jpg?v=1683791520",
       "price" :9.99,
       "year" : 2011,
       "genre" : "Open World Survival Craft"
