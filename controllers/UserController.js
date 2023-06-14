@@ -170,7 +170,7 @@ exports.authGithubCallback = async (req,res) => {
             })  
 
             createCookie(res, accessToken, jwt.decode(refreshToken).exp)
-            res.status(201).redirect(`http://localhost:3000/check-login`)
+            res.status(201).redirect(`http://localhost:3000/`)
 
 
           }).catch(function(err){
@@ -196,7 +196,7 @@ exports.authGithubCallback = async (req,res) => {
           })
 
           createCookie(res, accessToken, jwt.decode(refreshToken).exp)
-          res.status(200).redirect(`http://localhost:3000/check-login`)
+          res.status(200).redirect(`http://localhost:3000/`)
         }
         
       }).catch(function(err){
