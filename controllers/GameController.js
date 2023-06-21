@@ -3,10 +3,21 @@ const sequelize = require('../database');
 
 exports.getAllGames = async (req, res) => {
   try {
-    const games = await Game.findAll();
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 12;
+    const totalCount = await Game.count();
+    const offset = (page - 1) * limit;
+
+    const games = await Game.findAll({
+      offset,
+      limit
+    });
     if (games.length !== 0) {
-      res.status(200).json(games);
-      
+      res.status(200).json({
+        games,
+        page,
+        totalPages: Math.ceil(totalCount / limit),
+      });
     } else {
       res.status(404).json({ message: 'No games found' });
     }

@@ -4,7 +4,7 @@ exports.getComment = async (req, res) => {
   try {
     const { commentId } = req.params;
     const comment = await Comment.findByPk(commentId);
-
+    
     res.status(200).json(comment);
   } catch (err) {
     res.status(500).json({ message: 'Internal server error' });
@@ -76,7 +76,7 @@ exports.createComment = async (req, res) => {
     }
 
     await Comment.create({ text:text, rating:rating, UserId: userId, GameId: gameId });
-    res.status(201).json({ message: 'Comment created successfully' });
+    res.status(201).json({ message: 'Comment created successfully'});
 
    
 
