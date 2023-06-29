@@ -7,6 +7,7 @@ paths:
       responses:
         '200':
           description: Reached destination
+
   /users/auth/github/callback:
     get:
       tags: [Users]
@@ -19,6 +20,7 @@ paths:
           description: Authentication successful. User registered and logged in
         '500':
           description: Unauthorized
+
   /users/register:
     post:
       tags: [Users]
@@ -44,6 +46,7 @@ paths:
           description: Invalid request
         '409':
           description: Conflict, user already exists
+
   /users/login:
     post:
       tags: [Users]
@@ -69,6 +72,7 @@ paths:
           description: User not found
         '500':
           description: Internal server error
+
   /users/logout:
     get:
       tags: [Users]
@@ -79,6 +83,7 @@ paths:
       responses:
         '200':
           description: Successful logout
+
   /users/mydata:
     get:
       tags: [Users]
@@ -89,6 +94,58 @@ paths:
       responses:
         '200':
           description: Retrieves user data
+
+  /users/balance:
+    get:
+      tags: [Users]
+      summary: Show logged user's balance
+      description: Show logged user's balance
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Retrieves user data
+
+  /users/profile/{userId}:
+    get:
+      tags: [Users]
+      summary: Show user data based on id
+      description: Show user data based on id
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Retrieves user data
+
+  /users/games/{userId}:
+    get:
+      tags: [Users]
+      summary: Show user's games based on id
+      description: Show user's games based on id
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Retrieves user data
+
+  /users/search:
+    get:
+      tags: [Users]
+      summary: Search user by name
+      description: Search user by name
+      parameters:
+        - in: query
+          name: name
+          description: name of the user
+          schema:
+            type: string
+          required: true
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Retrieves user
+
   /users/changePassword:
     patch:
       tags: [Users]
@@ -112,11 +169,12 @@ paths:
           description: Incorrect old password
         '500':
           description: Internal server error
+
   /users/changeName:
     patch:
       tags: [Users]
       summary: Partially update a user's info
-      description: Partially update a user's username.
+      description: Update username.
       requestBody:
         required: true
         content:
@@ -133,6 +191,51 @@ paths:
           description: Invalid request
         '500':
           description: Internal server error
+
+  /users/addBalance:
+    patch:
+      tags: [Users]
+      summary: Partially update a user's info
+      description: Update balance.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                depositValue:
+                  type: integer
+      responses:
+        '200':
+          description: Balance updated
+        '400':
+          description: Invalid request
+        '500':
+          description: Internal server error
+
+  /users/changeDescription:
+    patch:
+      tags: [Users]
+      summary: Partially update a user's info
+      description: Update user description.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newDescription:
+                  type: string
+      responses:
+        '200':
+          description: Description updated successfully
+        '400':
+          description: Invalid request
+        '500':
+          description: Internal server error
+
   /users/createPW:
     patch:
       tags: [Users]
@@ -152,6 +255,7 @@ paths:
           description: Password created successfully
         '500':
           description: Internal server error
+
   /users/deleteMyAccount:
     delete:
       tags: [Users]
@@ -164,6 +268,7 @@ paths:
           description: Account not found
         '500':
           description: Internal server error
+
 components:
   securitySchemes:
     BearerAuth:

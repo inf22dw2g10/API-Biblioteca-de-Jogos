@@ -44,5 +44,5 @@ In this project we intend to create a library for games. Something similar to th
 ## Links
 
 * [Postman](https://www.postman.com/senou6/workspace/api-jogos/request/12813093-83af729d-fbb4-4a36-bbb5-6aa0cc618f82)
-* [API](https://hub.docker.com/r/inf22dw2g10/api_jogos)
+* [API](https://hub.docker.com/r/inf22dw2g10/gas-api)
 * [DB](https://hub.docker.com/layers/library/mysql/5-debian/images/sha256-e503382e533312b0f98d8b786dd06f729f080fb33b41444b699b697cfee38440?context=explore)

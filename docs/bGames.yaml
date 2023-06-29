@@ -48,6 +48,21 @@ paths:
           description: Game created
         '500':
           description: Internal server error
+  /games/search:
+    get:
+      tags: [Games]
+      summary: Search game by name
+      description: Search game by name
+      parameters:
+        - in: query
+          name: game
+          description: name of the game
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Retrieves game
   /games/{id}:
     get:
       tags: [ Games ]
